@@ -1,0 +1,230 @@
+#!/bin/sh
+#
+
+set +x
+
+if [ -z "$USER" ]; then
+        if [ ! -z "$LOGNAME" ]; then
+                USER=$LOGNAME
+                export USER
+        fi
+fi
+
+if [ -z "$HOST" ] ; then
+	export HOST=`uname -n`
+fi
+
+#if [ "$PS1" ] ; then  
+#   mkdir -p -m 0700 /dev/cgroup/cpu/user/$$ > /dev/null 2>&1
+#   echo $$ > /dev/cgroup/cpu/user/$$/tasks
+#   echo "1" > /dev/cgroup/cpu/user/$$/notify_on_release
+#fi
+
+# set enviroment variables
+
+VISUAL=vi
+EDITOR=vi
+PATH="${HOME}/bin:${HOME}/.cabal/bin:/usr/local/bin:/usr/local/sbin:${PATH}:/usr/sbin:/sbin"
+LC_COLLATE="POSIX"
+
+export VISUAL EDITOR PATH LC_COLLATE
+
+# set some compilation variables
+
+set +x
+
+HISTIGNORE="[   ]*:&:bg:fg"
+
+PS1='\[\033[1m\]\u@\h [\W] \$\[\033[0m\] '
+
+# setup aliases
+
+alias df='df -k'
+alias ds='dirs'
+alias egrep='egrep --color=auto'
+alias emacs='emacs -nw'
+alias fgrep='fgrep --color=auto'
+alias grep='grep --color=auto'
+if [ ! "`uname -s`" = "Darwin" ]; then
+    alias ls='ls -F --color=auto'
+    alias L='ls -lL'
+    alias l='ls -l'
+    alias la='ls -la'
+else
+    alias ls='/usr/local/bin/gls -F --color=auto'
+    alias L='/usr/local/bin/gls -lLF --color=auto'
+    alias l='/usr/local/bin/gls -lF --color=auto'
+    alias la='/usr/local/bin/gls -laF --color=auto'
+    alias vim='/usr/local/bin/mvim'
+    myos="OSX"
+    TERM=xterm
+    export TERM
+fi
+alias m='less -iM'
+alias more='m'
+alias mroe='m'
+alias mytop='mytop --prompt'
+alias pwd='echo $PWD'
+alias remote='tmux new -s remote'
+
+set bell-style none
+set enable-keypad Off
+set show-all-if-ambiguous On
+set visible-stats On
+set convert-meta On
+set input-meta On
+set output-meta On
+set keymap emacs-meta
+
+#complete -W “$(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ‘ ‘ | sed -e s/,.*//g | uniq | grep -v “\[“`;)” ssh
+
+[ -f /etc/bash_completion ] && . /etc/bash_completion
+[ -f /usr/local/etc/bash_completion.d/git-completion.bash ] && . /usr/local/etc/bash_completion.d/git-completion.bash
+[ -f /usr/local/etc/bash_completion.d/tig-completion.bash ] && . /usr/local/etc/bash_completion.d/tig-completion.bash
+# setup functions
+#s()
+#{
+#	screen -t $1 ssh $1
+#}
+
+psg()
+{
+	ps -ef | grep -v grep | egrep -i $1
+}
+
+slay()
+{
+	ps -ef | egrep $1 | egrep -v grep | awk '{print $2}' | asr xargs kill -9
+}
+
+s()
+{
+	tmux neww -n $1 "ssh $1"
+}
+
+st()
+{
+	xtitle $USER@$HOST $PWD
+}
+
+PROMPT_COMMAND='xtitle $USER@$HOST $PWD'
+export PROMPT_COMMAND
+
+cd()
+{
+	builtin cd "$@" && echo $PWD && ls && st
+}
+
+pd()
+{
+	builtin pushd "$@" && ls && st
+}
+
+pp()
+{
+	builtin popd "$@" && ls && st
+}
+
+xtitle()
+{
+	echo -n -e "\033]1;$HOST\007"
+	echo -n -e "\033]2;$*\007"
+}
+
+mm()
+{
+	nroff -man $1 | less -iM
+}
+
+nowin()
+{
+	cd ()
+	{
+		builtin cd "$@" && echo $PWD && ls
+	}
+
+	pd()
+	{
+		builtin pushd "$@" && ls
+	}
+
+	pp()
+	{
+		builtin popd "$@" && ls
+	}
+
+	unset PROMPT_COMMAND
+
+}
+
+function gitprompt()
+{
+    if branch=$(git symbolic-ref HEAD 2> /dev/null); then
+            echo "[${branch#'refs/heads/'}] "
+#        if [ "${branch#'refs/heads/'}" = "master" ]; then
+#            echo "\[\033[1;34m\][${branch#'refs/heads/'}] \[\033[0m\]"
+#        elif [ "${branch#'refs/heads/'}" = "prod" ]; then
+#            echo "\[\033[1;31m\][${branch#'refs/heads/'}] \[\033[0m\]"
+#        fi
+    fi
+}
+
+case "$(facter operatingsystem)" in
+        'CentOS')       xxx=C
+                        yyy="$(facter operatingsystemrelease)"
+                        ;;
+        'Fedora')       xxx=F
+                        yyy="$(facter operatingsystemrelease)"
+                        ;;
+        'Darwin')       xxx=X
+                        yyy="$(facter macosx_productversion)"
+                        ;;
+        'Debian')       xxx=D
+                        yyy="$(facter operatingsystemrelease)"
+                        ;;
+        'FreeBSD')      xxx=BSD
+                        yyy="$(facter operatingsystemrelease)"
+                        ;;
+        *)              unset xxx
+                        unset yyy
+                        ;;
+esac
+
+export myos=`echo "\[\033[1;34m\]${xxx}${yyy} \[\033[1;32m\]"`
+
+bold()		{ PS1='\[\033[1m\]\u@\h [\W] \$\[\033[0m\] '; }
+ok()		{ PS1='\[\033[1m\]ok\[\033[0m\] '; }
+bok()		{ PS1='\[\033[1;34m\]ok\[\033[0m\] '; }
+hok()		{ PS1='\[\033[1;34m\]\h ok\[\033[0m\] '; }
+red()		{ PS1="\[\033[1;31m\]\u@\h ${myos}[\W] \[\033[1;34m\]\[\033[0m\]\[\033[1;31m\]\\$\[\033[0m\] "; }
+redi()		{ PS1='\[\033[1;30;41m\]\u@\h [\W] \$\[\033[0m\] '; }
+green()		{ PS1="\[\033[1;32m\]\u@\h ${myos}[\W] \[\033[1;34m\]\[\033[0m\]\[\033[1;32m\]\\$\[\033[0m\] "; }
+greeni()	{ PS1='\[\033[1;30;42m\]\u@\h [\W] \$\[\033[0m\] '; }
+yellow()	{ PS1='\[\033[1;33m\]\u@\h [\W] \$\[\033[0m\] '; }
+yellowi()	{ PS1='\[\033[1;30;43m\]\u@\h [\W] \$\[\033[0m\] '; }
+blue()		{ PS1='\[\033[1;34m\]\u@\h [\W] \$\[\033[0m\] '; }
+bluei()		{ PS1='\[\033[1;30;44m\]\u@\h [\W] \$\[\033[0m\] '; }
+magenta()	{ PS1="\[\033[1;35m\]\u@\h ${myos}[\W] \[\033[1;34m\]\[\033[0m\]\[\033[1;35m\]\\$\[\033[0m\] "; }
+magentai()	{ PS1='\[\033[1;30;45m\]\u@\h [\W] \$\[\033[0m\] '; }
+cyan()		{ PS1='\[\033[1;36m\]\u@\h [\W] \$\[\033[0m\] '; }
+cyani()		{ PS1='\[\033[1;30;46m\]\u@\h [\W] \$\[\033[0m\] '; }
+white()		{ PS1='\[\033[1;37m\]\u@\h [\W] \$\[\033[0m\] '; }
+whitei()	{ PS1='\[\033[1;30;47m\]\u@\h [\W] \$\[\033[0m\] '; }
+
+APA=`/usr/bin/id -u`
+
+case $APA in
+1091)
+    green
+    ;;
+0)
+    red
+    ;;
+*)
+    magenta
+    ;;
+esac
+
+[ -f "${HOME}"/.git-prompt.sh ] && . ${HOME}/.git-prompt.sh
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting

@@ -1,0 +1,57 @@
+# vim:set ft=gitconfig:
+[alias]
+    # basic shortcuts
+  b = branch -avv
+  co = checkout
+  ci = commit -v
+  d = diff
+  ds = diff --staged
+  dt = difftool
+  mt = mergetool
+  sm = submodule
+  st   = status
+  stat = status
+  t = tag
+  unstage = reset HEAD --
+
+    # log commands
+  wc = whatchanged --abbrev-commit --date=relative --date-order --pretty='format:%Cgreen%h %Cblue%ar %Credby %an%Creset -- %s' -n 45
+  logp = "!f() { LESS='-FRX' GIT_PAGER='less -n +/^commit: ' git log --patch-with-stat $@; }; f"
+  logs = "!f() { LESS='-FRX' GIT_PAGER='less -n +/^commit: ' git log --stat --no-merges $@; }; f"
+  glog = log --graph --all --branches --date-order
+    # oneline = log --date-order --pretty='format:%Cgreen%h %Cblue%ar %Credby %an%Creset -- %s'
+  oneline = log --date-order --pretty='format:%Cgreen%h %Cblue%ai %Creset-- %s'
+
+    # search
+  search = "!f() { A1=$1; shift; git logp -S\"$A1\" $@; }; f"
+
+    # rebasing pull
+  rpull = pull --rebase --verbose --stat
+
+	create-pull-request = !sh -c 'stash pull-request $0'
+[gc]
+  auto=1
+[format]
+  pretty=%C(yellow)commit: %h%Cblue%d%Creset%nAuthor: %an%nDate:   %ad%n%n%w(0,4,4)%s%n%b
+[credential]
+  helper = osxkeychain
+[tig]
+  line-graphics = yes
+
+[tig "bind"]
+  generic = G !echo
+  stage = G !echo
+  main = G !echo
+
+[tig "color"]
+  author = green default normal
+[user]
+  name = Jonas Bygdén
+[github]
+  user = jby
+[ghi]
+  token = 14e9f3cbf0188212140f796920818511a23e5e37
+[diff]
+  tool = vimdiff
+[merge]
+  tool = vimdiff
