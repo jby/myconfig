@@ -1,0 +1,27 @@
+#!/usr/local/bin/zsh
+
+tmux -L jby start-server\; has-session -t jby 2>/dev/null
+
+if [ "$?" -eq 1 ]; then
+  cd /Users/jonasb
+
+  # Run pre command.
+  kinit jonasb
+
+  # Create the session and the first window.
+  TMUX= tmux -L jby new-session -d -s jby -n jby
+
+  # Create other windows.
+  tmux -L jby splitw -h #-t jby:1
+  tmux -L jby splitw
+  tmux -L jby select-pane -t jby:1.1
+  #tmux -L jby splitw -t jby:1.3
+  #tmux -L jby select-window -t 1
+  #tmux -L jby select-layout tiled
+fi
+
+if [ -z "$TMUX" ]; then
+  tmux -L jby -u attach-session -t jby
+else
+  tmux -L jby -u switch-client -t jby
+fi

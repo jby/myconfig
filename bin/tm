@@ -1,0 +1,47 @@
+#!/usr/local/bin/zsh
+
+# Clear rbenv variables before starting tmux
+unset RBENV_VERSION
+unset RBENV_DIR
+
+tmux -L jonasb start-server\; has-session -t jonasb 2>/dev/null
+
+if [ "$?" -eq 1 ]; then
+  cd /Users/jonasb
+
+  # Run pre command.
+  kinit jonasb
+
+  # Create the session and the first window.
+  TMUX= tmux -L jonasb new-session -d -s jonasb -n jonasb-mac
+
+  # Create other windows.
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:2 -n pe1 "ssh pe1"
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:3 -n tc01 "ssh tc01"
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:4 -n isyspup1 "ssh isyspup1"
+  tmux -L jonasb splitw -h -t jonasb:4 "ssh isyspup1"
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:5 -n psyspup1 "ssh psyspup1"
+  tmux -L jonasb splitw -h -t jonasb:5 "ssh psyspup1"
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:6 -n foreman "ssh foreman"
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:7 -n psysmon1 "ssh psysmon1"
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:8 -n psysbkp1 "ssh psysbkp1"
+  tmux -L jonasb splitw -h -t jonasb:8 "ssh psysbkp1"
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:9 -n psysbkp2 "ssh psysbkp2"
+  tmux -L jonasb splitw -h -t jonasb:9 "ssh psysbkp2"
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:10 -n psysbkp3 "ssh psysbkp3"
+  tmux -L jonasb splitw -h -t jonasb:10 "ssh psysbkp3"
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:11 -n psysbkp4 "ssh psysbkp4"
+  tmux -L jonasb splitw -h -t jonasb:11 "ssh psysbkp4"
+  tmux -L jonasb new-window -c /Users/jonasb -t jonasb:12 -n backup "ssh psysbkp1"
+  tmux -L jonasb splitw -h -t jonasb:12 "ssh psysbkp2"
+  tmux -L jonasb splitw -v -t jonasb:12 "ssh psysbkp3"
+  tmux -L jonasb splitw -v -t jonasb:12 "ssh psysbkp4"
+  tmux -L jonasb select-window -t jonasb:1
+
+fi
+
+if [ -z "$TMUX" ]; then
+  tmux -L jonasb -u attach-session -t jonasb
+else
+  tmux -L jonasb -u switch-client -t jonasb
+fi
