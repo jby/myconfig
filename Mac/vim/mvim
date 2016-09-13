@@ -11,7 +11,7 @@
 # First, check "All the Usual Suspects" for the location of the Vim.app bundle.
 # You can short-circuit this by setting the VIM_APP_DIR environment variable
 # or by un-commenting and editing the following line:
-VIM_APP_DIR=/usr/local/Cellar/macvim/7.4-106
+VIM_APP_DIR=/usr/local/Cellar/macvim/7.4-109
 
 if [ -z "$VIM_APP_DIR" ]
 then
@@ -52,6 +52,11 @@ opts=
 
 # GUI mode, implies forking
 case "$name" in m*|g*|rm*|rg*) gui=true ;; esac
+
+# Logged in over SSH? No gui.
+if [ -n "${SSH_CONNECTION}" ]; then
+	gui=
+fi
 
 # Restricted mode
 case "$name" in r*) opts="$opts -Z";; esac
