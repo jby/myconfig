@@ -25,7 +25,7 @@ do
   git fetch -p
 done
 cd $HOME/src/puppet
-for f in iat prod stage master
+for f in iat stage master prod
 do
   echo "${bldyel}${f}${txtrst}"
   git co ${f}
