@@ -2,7 +2,6 @@
 ForwardAgent		    	yes
 GSSAPIDelegateCredentials	yes
 GSSAPIAuthentication		yes
-GSSAPIKeyExchange	    	yes
 Host				home
 HostName			jbygden.publicvm.com
 User				jonasb
