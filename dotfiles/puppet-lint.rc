@@ -1,0 +1,9 @@
+--no-80chars-check
+#--no-autoloader_layout-check
+#--no-class_inherits_from_params_class-check
+#--no-documentation-check
+#--no-names_containing_dash-check
+#--no-nested_classes_or_defines-check
+#--no-only_variable_string-check
+#--no-parameter_order-check
+#--no-variable_contains_dash-check
