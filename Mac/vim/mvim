@@ -11,7 +11,11 @@
 # First, check "All the Usual Suspects" for the location of the Vim.app bundle.
 # You can short-circuit this by setting the VIM_APP_DIR environment variable
 # or by un-commenting and editing the following line:
+<<<<<<< Updated upstream
 VIM_APP_DIR=/usr/local/Cellar/macvim/8.0-114
+=======
+VIM_APP_DIR=/usr/local/Cellar/macvim/8.0-119
+>>>>>>> Stashed changes
 
 if [ -z "$VIM_APP_DIR" ]
 then

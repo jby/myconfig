@@ -17,7 +17,7 @@ pass=${bldblu}*${txtrst}
 warn=${bldred}*${txtrst}
 ques=${bldblu}?${txtrst}
 
-for f in bigip check_mk dns ks linode scripts ansible
+for f in macstuff bigip check_mk dns ks linode scripts ansible
 do
   echo "${bldyel}${f}${txtrst}"
   cd $HOME/src/${f}

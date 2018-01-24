@@ -1,5 +1,6 @@
 #StrictHostKeyChecking no
-ForwardAgent		    	yes
+ForwardAgent              yes
+AddKeysToAgent            yes
 GSSAPIDelegateCredentials	yes
 GSSAPIAuthentication		yes
 Host				home
@@ -8,6 +9,10 @@ User				jonasb
 Host        janeway
 HostName			janeway
 User				jonasb
+Host				cujo-temp
+HostName			bygden.nu
+User				jonas
+Port				1022
 Host				cujo
 HostName			bygden.nu
 User				jonas
