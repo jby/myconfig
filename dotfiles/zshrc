@@ -15,3 +15,6 @@ fi
 for config_file ($HOME/.yadr/zsh/*.zsh) source $config_file
 
 export PATH="$HOME/.rvm/gems/ruby-2.2.1/bin:$HOME/.rvm/bin:$PATH" # Add RVM to PATH for scripting
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
