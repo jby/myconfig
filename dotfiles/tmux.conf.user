@@ -99,6 +99,6 @@ bind-key S command-prompt -p ssh "new-window -n %1 'ssh %1'"
 bind-key Q command-prompt -p ssh "split-window 'ssh %1'"
 bind-key W command-prompt -p ssh "split-window -h 'ssh %1'"
 
-source '/usr/local/lib/python2.7/site-packages/powerline/bindings/tmux/powerline.conf'
+source '/Users/jonasb/src/github/powerline/powerline/bindings/tmux/powerline.conf'
 set -g status-right "%y%m%d %H:%M:%S"
 # vim:set ft=tmux:
