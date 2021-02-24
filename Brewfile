@@ -7,8 +7,6 @@ cask "adoptopenjdk"
 brew "adwaita-icon-theme"
 # Automate deployment, configuration, and upgrading
 brew "ansible"
-# Graphical system information display for macOS
-brew "archey"
 # Automatic configure script builder
 brew "autoconf"
 # Tool for generating GNU Standards-compliant Makefiles
